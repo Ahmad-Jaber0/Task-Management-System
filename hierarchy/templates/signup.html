@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <!-- Design by foolishdeveloper.com -->
+    <title>Signup Page</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/signup.css' %}">
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form action="" method="post">
+        {% csrf_token %} 
+        <h3>Signup Here</h3>
+
+        <label for="username">Username</label>
+        <input type="text" placeholder="Username" name="username" id="username">
+
+        <label for="email">Email</label>
+        <input type="email" placeholder="Email or Phone" name="email" id="email">
+
+        <label for="first name">first name</label>
+        <input type="text" placeholder="first name" name="first name" id="first name">
+
+        
+        <label for="Last name">Last name</label>
+        <input type="text" placeholder="Last name" name="Last name" id="Last name">
+
+        <label for="password1">Password</label>
+        <input type="password" placeholder="Password" id="password1" name="password1">
+
+
+        <label for="password2">Confrom Password</label>
+        <input type="password" placeholder="Confrom Password" id="password2" name="password2">
+
+        <button type="submit" id=>Signup</button>
+        
+        <a href="{% url 'login' %}" >i have already account</a>
+    </form>
+</body>
+</html>
