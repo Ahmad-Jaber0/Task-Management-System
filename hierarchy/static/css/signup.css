@@ -129,3 +129,15 @@ button {
 .social i {
     margin-right: 4px;
 }
+
+button:disabled {
+    background-color: #cccccc; 
+    cursor: not-allowed; 
+    color: #666666; 
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    display: none;
+}

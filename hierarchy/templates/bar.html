@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link href="{% static 'css/bar.css' %}" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-overlay"></div>
+
+      <button type="button" class="navbar-burger">
+        <span class="material-icons">menu</span>
+      </button>
+      <nav class="navbar-menu">
+        <a href="{% url 'home' %}"><button type="button">Home</button></a>
+        <a href="{% url 'login' %}"><button type="button" class="active">Login</button></a>
+        <a href="{% url 'signup' %}"><button type="button">Sign Up</button></a>
+      </nav>
+    </nav>
+  </body>
+</html>

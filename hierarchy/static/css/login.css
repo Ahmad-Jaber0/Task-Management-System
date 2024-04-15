@@ -184,3 +184,8 @@ input[type="submit"]:active {
         height: calc(20vw - 2px);
     }
 }
+
+.error-message {
+    color: rgb(212, 23, 23);
+    margin-bottom: 10px;
+}
