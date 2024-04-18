@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS  -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #007bff !important;
+        }
+        .navbar-brand, .navbar-nav .nav-link {
+            color: #ffffff !important;
+        }
+        .navbar-brand:hover, .navbar-nav .nav-link:hover {
+            color: #ffffff !important;
+        }
+        .card {
+            margin: 20px;
+            width: 20rem; /* Adjusted width */
+            float: left;
+        }
+        .navbar-menu {
+            position: relative;
+        }
+        .navbar-burger {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <form class="form-inline" action="{% url 'logout_page' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
+                </form>
+            </li>
+            {% if role == 'Team Leader' %}
+            <li class="nav-item">
+                <a href="{% url 'Show_developer' pk %}" class="btn btn-success ml-3">Show Developer</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'Watch_Task' %}" class="btn btn-success ml-3">Watch Task</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a href="{% url 'Create_task' pk %}" class="btn btn-success ml-3">Create Task</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container">
+    <h2 class="mt-4">Task Details</h2>
+    {% for task in tasks %}
+    {% if task.Manager_approved == True and task.Leader_approved == True %}    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ task.name }}</h5>
+            <p class="card-text">{{ task.task_description }}</p>
+            <div class="form-group">
+                <label for="status{{ task.id }}">Status:</label>
+                <select class="form-control" id="status{{ task.id }}" name="status">
+                    <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Ready for test" {% if task.status == 'Ready for test' %}selected{% endif %}>Ready for test</option>
+                    <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="updateTaskStatus({{ task.id }})">Update Status</button>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+<script>
+    function updateTaskStatus(taskId) {
+        var status = document.getElementById("status" + taskId).value;
+        fetch("{% url 'update_status' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                task_id: taskId,
+                status: status
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Optionally, update the UI to reflect the new status
+                console.log("Status updated successfully");
+            } else {
+                console.error("Failed to update status");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

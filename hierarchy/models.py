@@ -14,8 +14,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    supervisor = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='supervised_users')
-
+    supervisor = models.CharField(max_length=100,null=True, blank=True)
 
 
 class Task(models.Model):
@@ -24,6 +23,11 @@ class Task(models.Model):
         ('Ready for test', 'Ready for test'),
         ('Completed', 'Completed'),
     ]
+    name=models.CharField(max_length=50)
     task_description = models.TextField()
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES) 
+    Manager_approved = models.BooleanField(default=False)
+    Leader_approved = models.BooleanField(default=False)
+
+

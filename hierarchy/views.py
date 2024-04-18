@@ -5,10 +5,12 @@ from django.contrib.auth import authenticate,login,logout,get_user_model
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+import json
 
         
 def home(request):
     return render(request, 'home.html')
+
 
 def check_username(request):
     if request.method == 'POST':
@@ -17,6 +19,51 @@ def check_username(request):
             return JsonResponse({'is_taken': True})
         else:
             return JsonResponse({'is_taken': False})
+        
+def update_Task(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        task_id = data.get('task_id')
+        status = data.get('status')
+        
+        try:
+            task = Task.objects.get(pk=task_id)
+            my_user=request.user
+            if status == 'apply':
+                if my_user.role == 'Manager':
+                    task.Manager_approved = True
+                    task.save()
+                elif my_user.role == 'Team Leader':
+                    task.Leader_approved = True   
+                    task.save()
+                                
+                if task.Leader_approved == True and task.Manager_approved == True:
+                    task.status='In Progress'
+                    task.save()
+            elif status == 'reject':
+                task.delete()
+            return JsonResponse({'message': 'Task updated successfully'}, status=200)
+        except Task.DoesNotExist:
+            return JsonResponse({'error': 'Task does not exist'}, status=404)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def update_status(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        task_id = data.get('task_id')
+        status = data.get('status')
+        
+        try:
+            task = Task.objects.get(pk=task_id)
+            task.status = status
+            task.save()
+            return JsonResponse({'message': 'Status updated successfully'}, status=200)
+        except Task.DoesNotExist:
+            return JsonResponse({'error': 'Task does not exist'}, status=404)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)        
+
 
 def login(request):
     if request.method == 'POST':
@@ -44,7 +91,6 @@ def login(request):
         return render(request, 'login.html')
 
 
-
 def SignupPage(request):
     if request.method == 'POST':
         uname = request.POST.get('username')
@@ -66,25 +112,139 @@ def SignupPage(request):
 
     return render(request, 'signup.html')
 
-
+@login_required
 def LogoutPage(request):
     print("Logging out user...")
     logout(request)
     print("User logged out successfully.")
-    return redirect('home')
+    return render(request, 'logout.html')
 
 
+#upd--->if i'm run the server anr open the page manger until don't login, then page not found.
 @login_required
 def Manager(request):
     if request.user.role == 'Manager':
-        return render(request, 'Manager.html')
+        queryset = User.objects.filter(supervisor=request.user.username)
+        return render(request, 'Manager.html',{'Leaders':queryset,'pk':request.user.id})
     else:
-        return HttpResponseForbidden("You don't have permission to access this page.")
+        return render(request,'permission.html')
 
+
+@login_required    
+def Add_Team_Leader(request):
+    if request.method == 'POST':
+        uname = request.POST.get('username')
+        email = request.POST.get('email')
+        FN = request.POST.get('firstname')
+        LN = request.POST.get('lastname')
+        pass1 = request.POST.get('password')
+        role = 'Team Leader'
+
+        supervisor_username = request.user.username
+
+        if User.objects.filter(username=uname).exists():
+            pass
+        else:
+            my_user = User.objects.create_user(username=uname, email=email, first_name=FN, last_name=LN, password=pass1, role=role, supervisor=supervisor_username)
+            return redirect('Manager') 
+    else:
+        return render(request, 'add_leader.html')
+
+
+@login_required 
+def Add_Developer(request,pk):
+    if request.method == 'POST':
+        uname = request.POST.get('username')
+        email = request.POST.get('email')
+        FN = request.POST.get('firstname')
+        LN = request.POST.get('lastname')
+        pass1 = request.POST.get('password')
+        role = 'Developer'
+        x=User.objects.get(pk=pk)
+        supervisor_username = x.username
+
+        if User.objects.filter(username=uname).exists():
+            pass
+        else:
+            my_user = User.objects.create_user(username=uname, email=email, first_name=FN, last_name=LN, password=pass1, role=role, supervisor=supervisor_username)
+            return redirect('Manager')
+
+    else:
+        return render(request, 'add_developer.html')    
+
+@login_required
+def Show_Developer(request,pk):
+    x=User.objects.get(pk=pk)
+    queryset = User.objects.filter(supervisor=x.username)
+    return render(request,'show_developer.html',{'developers':queryset,'pk':pk,'role':request.user.role}) 
+
+@login_required
+def add_task(request,pk):
+    if request.method=='POST':
+        name=request.POST.get('Name')
+        description=request.POST.get('task_description')
+        assigned_to = User.objects.get(pk=pk)
+        print(assigned_to)
+        status='In Progress'
+        my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status,Manager_approved=True,Leader_approved=True)
+        if request.user.role =='Manager':
+            return redirect('Manager')
+        return redirect('Leader')
+        
+        
+    return render(request,'add_task.html')      
+
+@login_required
+def show_task(request,pk):
+    x=User.objects.get(pk=pk)
+    queryset = Task.objects.filter(assigned_to=x)
+    return render(request,'show_task.html',{'tasks':queryset,'pk':pk}) 
+
+@login_required
+def Create_task(request,pk):
+
+    if request.method=='POST':
+        name=request.POST.get('Name')
+        description=request.POST.get('task_description')
+        assigned_to = User.objects.get(pk=pk)
+        status='In Progress' 
+        if request.user.role == 'Team Leader':
+            my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status,Leader_approved=True)
+            return redirect('Leader')
+        
+        my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status)
+        return redirect('developer')
+        
+        
+    return render(request,'add_task.html') 
+
+@login_required
+def Watch_Task(request):
+
+    my_user = request.user
+    if my_user.role == 'Team Leader':
+        team_members = User.objects.filter(supervisor=my_user)
+        tasks = Task.objects.filter(assigned_to__in=team_members)
+    else:
+        tasks = Task.objects.all()
+
+    return render(request, 'watch_task.html', {'tasks': tasks,'role': my_user.role})
+
+
+
+@login_required
 def Leader(request):
-    return HttpResponse("Welcome, Team Leader!")
-
+    if request.user.role=='Team Leader':
+        queryset = Task.objects.filter(assigned_to=request.user)
+        return render(request,'Leader.html',{'tasks':queryset,'pk':request.user.id,'role':request.user.role}) 
+    else:
+        return render(request,'permission.html')
+    
+@login_required
 def developer(request):
-    return HttpResponse("Welcome, Developer!")
-
+    if request.user.role=='Developer':
+        queryset = Task.objects.filter(assigned_to=request.user)
+        return render(request,'Leader.html',{'tasks':queryset,'pk':request.user.id}) 
+    else:
+        return render(request,'permission.html')
 
