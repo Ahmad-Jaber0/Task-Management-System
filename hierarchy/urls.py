@@ -20,4 +20,7 @@ urlpatterns = [
     path('update_Task/', views.update_Task, name='update_Task'),
     path('Create_task/<int:pk>',views.Create_task,name="Create_task"),
     path('Watch_Task/',views.Watch_Task,name='Watch_Task'),
+    path('sortable/',views.Sortable,name='sortable'),
+    path('task_data/', views.task_data, name='task_data'),
+    path('user_data/', views.user_data, name='user_data'),
 ] 

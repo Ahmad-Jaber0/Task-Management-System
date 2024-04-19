@@ -11,6 +11,40 @@ import json
 def home(request):
     return render(request, 'home.html')
 
+def Sortable(request):
+
+    return render (request,"sortable.html")
+
+def task_data(request):
+    tasks = Task.objects.all()
+    data = []
+    for task in tasks:
+        data.append({
+            'id': task.id,
+            'name': task.name,
+            'task_description': task.task_description,
+            'assigned_to': task.assigned_to.username,
+            'status': task.status,
+            'approved': task.approved
+        })
+
+    return JsonResponse(data, safe=False)
+
+def user_data(request):
+    users = User.objects.all()
+    data = []
+    for user in users:
+        data.append({
+            'id': user.id,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'role': user.role,
+            'supervisor': user.supervisor
+        })
+    return JsonResponse(data, safe=False)
+
 
 def check_username(request):
     if request.method == 'POST':
@@ -28,17 +62,8 @@ def update_Task(request):
         
         try:
             task = Task.objects.get(pk=task_id)
-            my_user=request.user
             if status == 'apply':
-                if my_user.role == 'Manager':
-                    task.Manager_approved = True
-                    task.save()
-                elif my_user.role == 'Team Leader':
-                    task.Leader_approved = True   
-                    task.save()
-                                
-                if task.Leader_approved == True and task.Manager_approved == True:
-                    task.status='In Progress'
+                    task.approved = True
                     task.save()
             elif status == 'reject':
                 task.delete()
@@ -117,7 +142,7 @@ def LogoutPage(request):
     print("Logging out user...")
     logout(request)
     print("User logged out successfully.")
-    return render(request, 'logout.html')
+    return redirect('home')
 
 
 #upd--->if i'm run the server anr open the page manger until don't login, then page not found.
@@ -125,6 +150,7 @@ def LogoutPage(request):
 def Manager(request):
     if request.user.role == 'Manager':
         queryset = User.objects.filter(supervisor=request.user.username)
+
         return render(request, 'Manager.html',{'Leaders':queryset,'pk':request.user.id})
     else:
         return render(request,'permission.html')
@@ -208,11 +234,10 @@ def Create_task(request,pk):
         description=request.POST.get('task_description')
         assigned_to = User.objects.get(pk=pk)
         status='In Progress' 
+        my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status)
         if request.user.role == 'Team Leader':
-            my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status,Leader_approved=True)
             return redirect('Leader')
         
-        my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status)
         return redirect('developer')
         
         

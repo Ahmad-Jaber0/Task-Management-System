@@ -1,0 +1,21 @@
+/* Custom CSS for DataTables search input */
+.dataTables_filter label input {
+    border-radius: 10px;
+    padding: 8px;
+}
+
+/* Custom CSS for DataTables search icon */
+.dataTables_filter label::after {
+    content: "\f002"; /* Unicode for search icon (Font Awesome) */
+    font-family: FontAwesome;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Custom CSS for DataTables search icon on focus */
+.dataTables_filter label input:focus + ::after {
+    color: #007bff; /* Change color on focus */
+}
