@@ -195,8 +195,8 @@ def Add_Developer(request,pk):
         x=User.objects.get(pk=pk)
         supervisor_username = x
 
-        if User.objects.filter(username=uname).exists():
-            pass
+        if User.objects.filter(username=uname).exists() or User.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'Username or email already exists'}, status=400)
         else:
             my_user = User.objects.create_user(username=uname, email=email, first_name=FN, last_name=LN, password=pass1, role=role, supervisor=supervisor_username)
             return redirect('Manager')
