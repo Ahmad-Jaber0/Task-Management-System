@@ -16,7 +16,7 @@ def Sortable(request):
     return render (request,"sortable.html")
 
 def task_data(request):
-    tasks = Task.objects.all()
+    tasks = Task.objects.filter(assigned_to__supervisor__supervisor=request.user) | Task.objects.filter(assigned_to__supervisor=request.user)
     data = []
     for task in tasks:
         data.append({
@@ -31,7 +31,8 @@ def task_data(request):
     return JsonResponse(data, safe=False)
 
 def user_data(request):
-    users = User.objects.all()
+
+    users = User.objects.filter(supervisor=request.user) | User.objects.filter(supervisor__supervisor=request.user)
     data = []
     for user in users:
         user_dict = {
@@ -260,8 +261,9 @@ def Watch_Task(request):
     if my_user.role == 'Team Leader':
         team_members = User.objects.filter(supervisor=my_user)
         tasks = Task.objects.filter(assigned_to__in=team_members)
-    else:
-        tasks = Task.objects.all()
+    elif my_user.role == 'Manager':
+        tasks = Task.objects.filter(assigned_to__supervisor__supervisor=my_user) | Task.objects.filter(assigned_to__supervisor=my_user)
+
 
     return render(request, 'watch_task.html', {'tasks': tasks,'role': my_user.role})
 
