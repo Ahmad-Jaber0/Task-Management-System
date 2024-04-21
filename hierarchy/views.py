@@ -34,17 +34,18 @@ def user_data(request):
     users = User.objects.all()
     data = []
     for user in users:
-        data.append({
+        user_dict = {
             'id': user.id,
             'username': user.username,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'email': user.email,
             'role': user.role,
-            'supervisor': user.supervisor
-        })
+            'supervisor': user.supervisor.username if user.supervisor else None  
+        }
+        
+        data.append(user_dict)
     return JsonResponse(data, safe=False)
-
 
 def check_username(request):
     if request.method == 'POST':
@@ -99,7 +100,7 @@ def login(request):
         
         if user is not None:
             auth.login(request, user)
-            
+            print(user.role)
             if user.role == 'Manager':
                 return redirect("Manager")
             elif user.role == 'Team Leader':
@@ -139,22 +140,27 @@ def SignupPage(request):
 
 @login_required
 def LogoutPage(request):
-    print("Logging out user...")
     logout(request)
-    print("User logged out successfully.")
     return redirect('home')
 
 
-#upd--->if i'm run the server anr open the page manger until don't login, then page not found.
 @login_required
 def Manager(request):
     if request.user.role == 'Manager':
-        queryset = User.objects.filter(supervisor=request.user.username)
+        queryset = Task.objects.filter(assigned_to=request.user)
+        return render(request,'Manager.html',{'tasks':queryset})
 
-        return render(request, 'Manager.html',{'Leaders':queryset,'pk':request.user.id})
     else:
         return render(request,'permission.html')
+    
+@login_required
+def View_members(request):
+    if request.user.role == 'Manager':
+        queryset = User.objects.filter(supervisor=request.user)
 
+        return render(request, 'View_members.html',{'Leaders':queryset,'pk':request.user.id})
+    else:
+        return render(request,'permission.html')
 
 @login_required    
 def Add_Team_Leader(request):
@@ -166,10 +172,10 @@ def Add_Team_Leader(request):
         pass1 = request.POST.get('password')
         role = 'Team Leader'
 
-        supervisor_username = request.user.username
+        supervisor_username = request.user
 
-        if User.objects.filter(username=uname).exists():
-            pass
+        if User.objects.filter(username=uname).exists() or User.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'Username or email already exists'}, status=400)
         else:
             my_user = User.objects.create_user(username=uname, email=email, first_name=FN, last_name=LN, password=pass1, role=role, supervisor=supervisor_username)
             return redirect('Manager') 
@@ -187,7 +193,7 @@ def Add_Developer(request,pk):
         pass1 = request.POST.get('password')
         role = 'Developer'
         x=User.objects.get(pk=pk)
-        supervisor_username = x.username
+        supervisor_username = x
 
         if User.objects.filter(username=uname).exists():
             pass
@@ -201,7 +207,7 @@ def Add_Developer(request,pk):
 @login_required
 def Show_Developer(request,pk):
     x=User.objects.get(pk=pk)
-    queryset = User.objects.filter(supervisor=x.username)
+    queryset = User.objects.filter(supervisor=x)
     return render(request,'show_developer.html',{'developers':queryset,'pk':pk,'role':request.user.role}) 
 
 @login_required
@@ -212,7 +218,7 @@ def add_task(request,pk):
         assigned_to = User.objects.get(pk=pk)
         print(assigned_to)
         status='In Progress'
-        my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status,Manager_approved=True,Leader_approved=True)
+        my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status,approved=True)
         if request.user.role =='Manager':
             return redirect('Manager')
         return redirect('Leader')
@@ -227,14 +233,18 @@ def show_task(request,pk):
     return render(request,'show_task.html',{'tasks':queryset,'pk':pk}) 
 
 @login_required
-def Create_task(request,pk):
+def Create_task(request):
 
     if request.method=='POST':
         name=request.POST.get('Name')
         description=request.POST.get('task_description')
-        assigned_to = User.objects.get(pk=pk)
+        assigned_to = request.user
         status='In Progress' 
-        my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status)
+        if request.user.role=='Manager':
+            my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status,approved=True)
+            return redirect('Manager')
+                
+        my_user = Task.objects.create(name=name, task_description=description, assigned_to=assigned_to, status=status)        
         if request.user.role == 'Team Leader':
             return redirect('Leader')
         

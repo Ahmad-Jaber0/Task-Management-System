@@ -1,21 +1,37 @@
-/* Custom CSS for DataTables search input */
-.dataTables_filter label input {
-    border-radius: 10px;
-    padding: 8px;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
 }
 
-/* Custom CSS for DataTables search icon */
-.dataTables_filter label::after {
-    content: "\f002"; /* Unicode for search icon (Font Awesome) */
-    font-family: FontAwesome;
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6c757d;
+.container {
+    margin-top: 50px;
 }
 
-/* Custom CSS for DataTables search icon on focus */
-.dataTables_filter label input:focus + ::after {
-    color: #007bff; /* Change color on focus */
+h2 {
+    color: #007bff;
+}
+
+#taskUserTable_wrapper .dropdown-toggle {
+    margin-right: 10px;
+}
+
+#taskUserTable th,
+#taskUserTable td {
+    vertical-align: middle;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}
+.table-row-hover:hover {
+    background-color: #f5f5f5; 
+    cursor: pointer; 
+}
+
+#taskUserTable tbody tr:nth-child(odd) {
+    background-color: #f9f9f9; 
+}
+
+#taskUserTable tbody tr:nth-child(even) {
+    background-color: #ffffff; 
 }

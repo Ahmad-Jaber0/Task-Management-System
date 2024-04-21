@@ -14,7 +14,8 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    supervisor = models.CharField(max_length=100,null=True, blank=True)
+    supervisor = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='supervised_users')
+    
 
 
 class Task(models.Model):

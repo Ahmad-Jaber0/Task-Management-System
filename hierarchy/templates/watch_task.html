@@ -2,10 +2,8 @@
 {% load static %}
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/show_task.css' %}">
 
@@ -18,11 +16,13 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <form class="form-inline" action="{% url 'logout_page' %}" method="post">
-                    {% csrf_token %}
-                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
-                </form>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ request.user.username }}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="{% url 'logout_page' %}">Logout</a>
+                </div>
             </li>
         </ul>
     </div>
@@ -46,7 +46,7 @@
                     <option value="apply">Apply</option>
                 </select>
             </div>
-            <button type="button" class="btn btn-primary" onclick="updateTask({{ task.id }})">Update Task</button>
+            <button type="button" class="btn btn-primary" onclick="updateTaskStatus({{ task.id }})">Update Task</button>
         </div>
     </div>
     {% endif %}
@@ -64,7 +64,7 @@
                     <option value="apply">Apply</option>
                 </select>
             </div>
-            <button type="button" class="btn btn-primary" onclick="updateTask({{ task.id }})">Update Task</button>
+            <button type="button" class="btn btn-primary" onclick="updateTaskStatus({{ task.id }})">Update Task</button>
         </div>
     </div>
     {% endif %}
@@ -72,33 +72,13 @@
     {% endfor %}
 </div>
 
-<script>
-    function updateTask(taskId) {
-        var status = document.getElementById("status" + taskId).value;
-        fetch("{% url 'update_Task' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                task_id: taskId,
-                status: status
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log("Task updated successfully");
-                window.location.reload();  // Reload the page after updating task
-            } else {
-                console.error("Failed to update task");
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="{% static 'JS/Leader.js' %}"></script>
+<script>var NewUrl = "{% url 'update_Task' %}";</script>
+
+<script>var csrfToken = "{{ csrf_token }}";</script>
+
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

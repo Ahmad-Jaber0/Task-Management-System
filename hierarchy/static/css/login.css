@@ -188,4 +188,5 @@ input[type="submit"]:active {
 .error-message {
     color: rgb(212, 23, 23);
     margin-bottom: 10px;
+    text-align: center;
 }
