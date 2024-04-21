@@ -24,10 +24,12 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ request.user.username }}
                 </a>
+                
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="{% url 'logout_page' %}">Logout</a>
                 </div>
             </li>
+            
             <li class="nav-item">
                 <a href="{% url 'add_task' pk %}" class="btn btn-success ml-3">Add Task</a>
             </li>

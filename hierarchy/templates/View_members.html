@@ -20,6 +20,18 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ request.user.username }}
                     </a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Operation Keys
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="{% url 'add_Leader' %}" class="btn btn-success ml-3">Add Team Leader</a>
+                            <a class="dropdown-item" href="{% url 'Create_task' %}" class="btn btn-success ml-3">Create Task</a>
+                            <a class="dropdown-item" href="{% url 'Watch_Task' %}" class="btn btn-success ml-3">Watch Task</a>
+                            <a class="dropdown-item" href="{% url 'sortable' %}" class="btn btn-success ml-3">Sortable</a>
+                            <a class="dropdown-item" href="{% url 'View_members' %}" class="btn btn-success ml-3">View members</a>
+                        </div>
+                    </li>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="{% url 'logout_page' %}">Logout</a>
                     </div>
