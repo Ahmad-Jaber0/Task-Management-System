@@ -2,21 +2,18 @@
 {% load static %}
 <html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Signup Page</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/signup.css' %}">
-        
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script src="{% static 'JS/signup.js' %}"></script>
-    <script NewUrl="{% url 'check_username' %}"></script>
-    <script>var csrfToken = "{{ csrf_token }}";</script>
 </head>
 <body>
     <div class="background">
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
-    <form action="" method="post">
+    <form id="signupForm" method="post">
         {% csrf_token %} 
         <h3>Signup Here</h3>
         <label for="username">Username</label>
@@ -25,11 +22,11 @@
         <label for="email">Email</label>
         <input type="email" placeholder="Email or Phone" name="email" id="email">
 
-        <label for="first name">First name</label>
-        <input type="text" placeholder="First name" name="first name" id="first name">
+        <label for="first_name">First name</label>
+        <input type="text" placeholder="First name" name="first_name" id="first_name">
 
-        <label for="Last name">Last name</label>
-        <input type="text" placeholder="Last name" name="Last name" id="Last name">
+        <label for="last_name">Last name</label>
+        <input type="text" placeholder="Last name" name="last_name" id="last_name">
 
         <label for="password1">Password</label>
         <input type="password" placeholder="Password" id="password1" name="password1">
@@ -38,9 +35,78 @@
         <input type="password" placeholder="Confirm Password" id="password2" name="password2">
         <p id="password-match-message" class="error-message" style="display: none;">Passwords do not match.</p>
 
-        <button type="submit" disabled>Signup</button>
+        <button type="submit" id="signupButton" disabled>Signup</button>
         
         <a href="{% url 'login' %}" >I already have an account</a>
     </form>
+
+    <script>
+        $(document).ready(function () {
+            $('#signupForm').submit(function (e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "signup" %}',
+                    data: formData,
+                    success: function (response) {
+                        alert(response.success); 
+                        window.location.href = '{% url "login" %}';
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        if (jsonResponse.error) {
+                            alert(jsonResponse.error);
+                        }
+                    }
+                });
+            });
+
+            
+
+            // Validate form fields and update button status on DOM content load
+            const usernameInput = document.getElementById('username');
+            const signUpButton = document.querySelector('button[type="submit"]');
+            const passwordInput = document.getElementById('password1');
+            const confirmPasswordInput = document.getElementById('password2');
+            const passwordMatchMessage = document.getElementById('password-match-message');
+
+            function updateButtonStatus() {
+                const isEmpty = Array.from(document.querySelectorAll('input')).some(input => input.value.trim() === '');
+                if (isEmpty || passwordInput.value !== confirmPasswordInput.value) {
+                    signUpButton.disabled = true;
+                } else {
+                    signUpButton.disabled = false;
+                }
+            }
+
+            function checkPasswordMatch() {
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    passwordMatchMessage.textContent = 'Passwords do not match.';
+                    passwordMatchMessage.style.display = 'block';
+                    signUpButton.disabled = true;
+                } else {
+                    passwordMatchMessage.textContent = '';
+                    passwordMatchMessage.style.display = 'none';
+                    updateButtonStatus();
+                }
+            }
+
+            signUpButton.addEventListener('click', function() {
+                checkPasswordMatch();
+            });
+
+            passwordInput.addEventListener('input', function() {
+                checkPasswordMatch();
+            });
+
+            confirmPasswordInput.addEventListener('input', function() {
+                checkPasswordMatch();
+            });
+
+            updateButtonStatus();
+        });
+    </script>
 </body>
 </html>

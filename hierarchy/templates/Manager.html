@@ -10,21 +10,22 @@
 
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="{% url 'Manager' %}">Home</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ request.user.username }}
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="{% url 'logout_page' %}">Logout</a>
-                </div>
-            </li>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'Manager' %}">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ request.user.username }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{% url 'MyAccount' %}" class="btn btn-success ml-3">My Account</a>
+                        <a class="dropdown-item" href="{% url 'logout_page' %}" class="btn btn-success ml-3">Logout</a>
+                    </div>
+                </li>
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -45,21 +46,28 @@
 <div class="container">
     <h2 class="mt-4">Task Details</h2>
     {% for task in tasks %}
-    {% if task.approved == True %}    
-
+    {% if task.approved == True %} 
+       
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">{{ task.name }}</h5>
             <p class="card-text">{{ task.task_description }}</p>
-            <p class="card-text">Status: 
-                <span class="badge badge-{{ task.status|lower }}">{{ task.status }}</span>
-            </p>
+            <div class="form-group">
+                <label for="status{{ task.id }}">Status:</label>
+                <select class="form-control" id="status{{ task.id }}" name="status">
+                    <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Ready for test" {% if task.status == 'Ready for test' %}selected{% endif %}>Ready for test</option>
+                    <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="updateTaskStatus({{ task.id }})">Update Status</button>
         </div>
     </div>
     {% endif %}
     {% endfor %}
 </div>
 
+<script src="{% static 'JS/Leader.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

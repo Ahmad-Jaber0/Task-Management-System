@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-{%load static%}
-
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Add Developer</title>
+    <title>Add Team Leader</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/add_User.css' %}">
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -16,11 +17,12 @@
         <div class="col-md-8">
             <div class="form-container">
                 <h2 class="text-center mb-4">Add Developer</h2>
-                <form action="" method="post">
+                <form id="addTeamLeaderForm" method="post">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" class="form-control" id="username" name="username" required>
+                        <small id="username-error" class="text-danger"></small>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
@@ -32,17 +34,47 @@
                     </div>
                     <div class="form-group">
                         <label for="firstname">First Name</label>
-                        <input type="text" class="form-control" id="firstname" name="firstname" required>
+                        <input type="text" class="form-control" id="firstname" name="first_name" required>
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name</label>
-                        <input type="text" class="form-control" id="lastname" name="lastname" required>
+                        <input type="text" class="form-control" id="lastname" name="last_name" required>
                     </div>
+                    <input type="hidden" name="role" value="Team Leader"> 
                     <button type="submit" class="btn btn-primary btn-block">Add Developer</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('#addTeamLeaderForm').submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData(this); 
+            $.ajax({
+                type: 'POST',
+                url: '{% url "add_developer" pk %}',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    alert(response.success); 
+                    window.location.href = '{% url "Manager" %}'; 
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    var jsonResponse = JSON.parse(xhr.responseText);
+                    if (jsonResponse.username) {
+                        $('#username-error').text(jsonResponse.username); 
+                    } else {
+                        $('#username-error').text("An error occurred. Please try again.");
+                    }
+                }
+            });
+        });
+    });
+    
+</script>
 </body>
 </html>

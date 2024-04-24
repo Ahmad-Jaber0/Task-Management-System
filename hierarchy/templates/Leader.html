@@ -14,7 +14,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
     {% if role == 'Team Leader' %}
     <a class="navbar-brand" href="{% url 'Leader' %}">Home</a>
-    {% else %}
+    {% else%}
     <a class="navbar-brand" href="{% url 'developer' %}">Home</a>
     {% endif %}
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,8 @@
                     {{ request.user.username }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="{% url 'logout_page' %}">Logout</a>
+                    <a class="dropdown-item" href="{% url 'MyAccount' %}" class="btn btn-success ml-3">My Account</a>
+                    <a class="dropdown-item" href="{% url 'logout_page' %}" class="btn btn-success ml-3">Logout</a>
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -35,14 +36,24 @@
                     Operation Keys
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    {% if role == 'Team Leader' %}
-                    <a class="dropdown-item" href="{% url 'Show_developer' pk %}" class="btn btn-success ml-3">Show Developer</a>
+                    {% if role == 'Manager' %}
+                        <a class="dropdown-item" href="{% url 'add_Leader' %}" class="btn btn-success ml-3">Add Team Leader</a>
+                        <a class="dropdown-item" href="{% url 'sortable' %}" class="btn btn-success ml-3">Sortable</a>
+                        <a class="dropdown-item" href="{% url 'View_members' %}" class="btn btn-success ml-3">View members</a>
+                        <a class="dropdown-item" href="{% url 'Watch_Task' %}" class="btn btn-success ml-3">Watch Task</a>
 
-                    <a class="dropdown-item" href="{% url 'Watch_Task' %}" class="btn btn-success ml-3">Watch Task</a>
                     {% endif %}
-                    <a class="dropdown-item" href="{% url 'Create_task'%}" class="btn btn-success ml-3">Create Task</a>
+                    {% if role == 'Team Leader' %}
+                        <a class="dropdown-item" href="{% url 'Show_developer' pk %}" class="btn btn-success ml-3">Show Developer</a>
+                        <a class="dropdown-item" href="{% url 'Watch_Task' %}" class="btn btn-success ml-3">Watch Task</a>
+
+                    {% endif %}
+
+                        <a class="dropdown-item" href="{% url 'Create_task'%}" class="btn btn-success ml-3">Create Task</a>
+
                 </div>
             </li>
+            
         </ul>
     </div>
 </nav>

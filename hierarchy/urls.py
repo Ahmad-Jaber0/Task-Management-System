@@ -10,7 +10,6 @@ urlpatterns = [
     path('Manager/', views.Manager, name='Manager'), 
     path('Leader/', views.Leader, name='Leader'), 
     path('developer/', views.developer, name='developer'), 
-    path('check-username/', views.check_username, name='check_username'),
     path('add_Leader',views.Add_Team_Leader,name='add_Leader'),
     path('add_developer/<int:pk>/',views.Add_Developer,name='add_developer'),
     path('Show_developer/<int:pk>/',views.Show_Developer,name='Show_developer'),
@@ -23,5 +22,10 @@ urlpatterns = [
     path('sortable/',views.Sortable,name='sortable'),
     path('task_data/', views.task_data, name='task_data'),
     path('user_data/', views.user_data, name='user_data'),
-    path('View_members/',views.View_members,name='View_members')
+    path('View_members/',views.View_members,name='View_members'),
+    path('edit_task/<int:pk>/', views.edit_task, name='edit_task'),
+    path('delete_task/<int:task_id>/', views.delete_task, name='delete_task'),
+    path('MyAccount/',views.MyAccount,name='MyAccount'),
+
+
 ] 
