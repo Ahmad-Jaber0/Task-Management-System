@@ -130,17 +130,6 @@ def LogoutPage(request):
     logout(request)
     return redirect('home')
 
-@login_required
-def update_profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('my_account')  # Redirect to the account page after successful update
-    else:
-        form = UserProfileForm(instance=request.user)
-    return render(request, 'update_profile.html', {'form': form})
-
 
 @login_required
 def Manager(request):
