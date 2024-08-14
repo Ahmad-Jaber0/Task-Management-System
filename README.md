@@ -19,11 +19,12 @@ Developer: View and update the status of their own tasks.
 # Result
 A fully functional web application with the following features:
 
-1-Home, Login, Logout, and User/Employee pages.
-2- Sign-Up Page: Only accessible by managers.
-3- Login Page: Employees can log in to view their tasks.
-4- Team Leader: Can view their tasks, their developers, and assign new tasks.
-5- Developer: Can view and update their tasks (status options include "In Progress", "Ready for Test", "Completed").
-6- Manager: Can view and manage team leaders and developers, add new team leads and developers, and approve new tasks.
-7- Sortable Task/User List Table: Allows sorting of tasks and users.
+1. Home, Login, Logout, and User/Employee pages.
+2. Sign-Up Page: Only accessible by managers.
+3. Login Page: Employees can log in to view their tasks.
+4. Team Leader: Can view their tasks, their developers, and assign new tasks.
+5. Developer: Can view and update their tasks (status options include "In Progress", "Ready for Test", "Completed").
+6. Manager: Can view and manage team leaders and developers, add new team leads and developers, and approve new tasks.
+7. Sortable Task/User List Table: Allows sorting of tasks and users.
+
 
