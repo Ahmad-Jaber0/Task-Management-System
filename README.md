@@ -1,32 +1,112 @@
-# Description
-This project is a simple task management system for a company with the following hierarchy:
+# 📌 Task Management System  
+
+## 📝 Description  
+This project is a **Task Management System** designed for companies to efficiently manage tasks among employees according to their roles. The system follows a clear hierarchy:
 
 - **Manager**
 - **Team Leaders**
 - **Developers**
 
-Each role has tasks assigned and personal information (username, first name, last name, email, password). The permissions are as follows:
+Each role has specific permissions and responsibilities:  
 
-- **Manager**: Access to all team leaders and developers, view hierarchy, see tasks, and add new employees.
-- **Team Leader**: View and assign tasks to their developers, and manage their own tasks.
-- **Developer**: View and update the status of their own tasks.
+- **Manager**:  
+  - Access all **team leaders** and **developers**  
+  - View company hierarchy  
+  - See all tasks  
+  - Add new employees  
 
+- **Team Leader**:  
+  - View and assign tasks to their **developers**  
+  - Manage their own tasks  
 
-# Task Parts
+- **Developer**:  
+  - View their assigned tasks  
+  - Update the status of their tasks  
 
-1. Create the database tables.
-2. Implement login and logout functionality.
-3. Develop the necessary web pages.
+---
 
-# Result
-A fully functional web application with the following features:
+## ⚙️ Task Parts  
+The project consists of the following key parts:  
 
-1. Home, Login, Logout, and User/Employee pages.
-2. Sign-Up Page: Only accessible by managers.
-3. Login Page: Employees can log in to view their tasks.
-4. Team Leader: Can view their tasks, their developers, and assign new tasks.
-5. Developer: Can view and update their tasks (status options include "In Progress", "Ready for Test", "Completed").
-6. Manager: Can view and manage team leaders and developers, add new team leads and developers, and approve new tasks.
-7. Sortable Task/User List Table: Allows sorting of tasks and users.
+1. **Database Design** – Creating tables for employees, tasks, and roles.  
+2. **Authentication System** – Implementing login and logout functionality.  
+3. **Web Interface** – Developing user-friendly pages for different roles.  
 
+---
 
+## 🛠️ Tech Stack  
+- **Backend**: Django (Python)  
+- **Frontend**: HTML, CSS, JavaScript  
+- **Database**: SQLite 
+- **Authentication**: Django's built-in authentication system  
+
+---
+
+## 🚀 Features  
+
+✅ **User Roles & Authentication**  
+✅ **Task Assignment & Management**  
+✅ **Sorting & Filtering for Tasks/Users**  
+✅ **Role-Based Access Control (RBAC)**  
+
+---
+
+## 🔑 Installation & Setup  
+
+1️⃣ **Clone the repository**  
+```bash
+git clone https://github.com/Ahmad-Jaber0/Task-Management-System.git
+cd task-management-system
+```
+
+2️⃣ **Install dependencies**  
+```bash
+pip install -r requirements.txt
+```
+
+3️⃣ **Run database migrations**  
+```bash
+python manage.py migrate
+```
+
+4️⃣ **Create a superuser (for Manager role)**  
+```bash
+python manage.py createsuperuser
+```
+
+5️⃣ **Run the development server**  
+```bash
+python manage.py runserver
+```
+
+---
+
+## 🌍 Usage  
+
+### **1️⃣ Login Page**  
+Employees can log in to view and manage their tasks.  
+
+### **2️⃣ Manager Dashboard**  
+- View & manage **Team Leaders** and **Developers**  
+- Add new employees  
+- Approve new tasks  
+
+### **3️⃣ Team Leader Panel**  
+- View **assigned developers**  
+- Assign & manage tasks  
+
+### **4️⃣ Developer Panel**  
+- View & update **task statuses**  
+  - **In Progress**  
+  - **Ready for Test**  
+  - **Completed**  
+
+---
+
+## 🤝 Contributing  
+Feel free to contribute by submitting **pull requests**. For major changes, please open an **issue** first to discuss what you would like to change.  
+
+---
+
+### 📧 Contact  
+For any inquiries or suggestions, reach out via **jaber5834@gmail.com**  
